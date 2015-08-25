@@ -34,6 +34,18 @@ pointCloudRotated2 = R_OdomToGround*xyzOdom' + repmat(T_OdomToGround,1,size(xyzO
 % pointCloudRotated2 == pointCloudRotated
 
 
+% subscribe to odom, get inital odometry.
+% points are respect to odom
+odomTopic = '/kinect_odometer/odometry';
+odomSub = rossubscriber(odomTopic);
+odomMsg = receive(odomSub,timeOut);
+
+
+goalState = [0 3]; % [x y]
+joyCmdsTopic = '/chair_joy2';
+joyCmdsPub = rospublisher(joyCmdsTopic, rostype.sensor_msgs_Joy);
+pause(2) % Wait to ensure publisher is setup
+
 figure(1)
 % scatter3(pointcloudMsgOdom);
 titleString = 'relative to ground';
@@ -42,15 +54,9 @@ xlabel('X');
 ylabel('Y');
 zlabel('Z');
 hold on
-
-% subscribe to odom, get inital odometry.
-% points are respect to odom
-odomTopic = '/kinect_odometer/odometry';
-odomSub = rossubscriber(odomTopic);
-odomMsg = receive(odomSub,timeOut);
-
 posHistory = [];
 orientHistory = [];
+transJoyCmdHistory = [];
 tic;
 while toc < 40
     odomMsg = receive(odomSub,timeOut);
@@ -70,12 +76,17 @@ while toc < 40
     % scatter3( posHistory(1,:), posHistory(2,:), posHistory(3,:) );
     scatter3( posRotated(1,:), posRotated(2,:), posRotated(3,:) );
 
-    % subplot(1,2,2)
-    % scatter3( orientHistory(1,:), orientHistory(2,:), orientHistory(3,:) );
-    % title('Orientation Quaternion History');
-    % xlabel('X');
-    % ylabel('Y');
-    % zlabel('Z');
 
+    distFromGoalState = norm([pos(1) - goalState(1), pos(2) - goalState(2)])   
+    closeToGoalState = distFromGoalState < 0.5; % metres
+    if ~closeToGoalState
+        angularJoyCmd = 0.00;
+        translationalJoyCmd = 0.2;
+        transJoyCmdHistory = [transJoyCmdHistory translationalJoyCmd];
+        joyCmdsMsg = rosmessage(joyCmdsPub);
+        joyCmdsMsg.Axes = [angularJoyCmd translationalJoyCmd];
+        joyCmdsMsg.Header.Stamp = rostime('now'); 
+        send(joyCmdsPub, joyCmdsMsg);
+    end
 end
 hold off

@@ -36,6 +36,7 @@ pointCloudRotated2 = R_OdomToGround*xyzOdom' + repmat(T_OdomToGround,1,size(xyzO
 
 figure(1)
 % scatter3(pointcloudMsgOdom);
+titleString = 'relative to ground';
 plotPointCloud(pointCloud(pointCloudRotated2'), titleString);
 xlabel('X');
 ylabel('Y');
@@ -51,7 +52,7 @@ odomMsg = receive(odomSub,timeOut);
 posHistory = [];
 orientHistory = [];
 tic;
-while toc < 5
+while toc < 40
     odomMsg = receive(odomSub,timeOut);
 
     position = odomMsg.Pose.Pose.Position;
@@ -67,7 +68,7 @@ while toc < 5
     % figure(1)
     % subplot(1,2,1)
     % scatter3( posHistory(1,:), posHistory(2,:), posHistory(3,:) );
-    scatter3( pos(1,:), pos(2,:), pos(3,:) );
+    scatter3( posRotated(1,:), posRotated(2,:), posRotated(3,:) );
 
     % subplot(1,2,2)
     % scatter3( orientHistory(1,:), orientHistory(2,:), orientHistory(3,:) );

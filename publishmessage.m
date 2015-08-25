@@ -3,7 +3,7 @@ joyCmdsTopic = '/chair_joy2';
 joyCmdsPub = rospublisher(joyCmdsTopic, rostype.sensor_msgs_Joy);
 pause(2) % Wait to ensure publisher is setup
 
-while true
+for i = 1:100
     % create an empty ros message that's the type of joyCmdsPub
     joyCmdsMsg = rosmessage(joyCmdsPub);
 
@@ -18,5 +18,5 @@ while true
 
     % send!
     send(joyCmdsPub, joyCmdsMsg);
-    pause(2)
+    pause(0.1)
 end

@@ -19,6 +19,14 @@ odomMsg = receive(odomSub,timeOut);
 posHistory = [];
 orientHistory = [];
 tic;
+
+figure (1)
+hold on
+scatter3(pointcloudMsg);
+title('Position History');
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
 while toc < 40
     odomMsg = receive(odomSub,timeOut);
 
@@ -32,19 +40,16 @@ while toc < 40
     orientRotm = quat2rotm(orientQuat);
     orientHistory = [orientHistory orientQuat'];
 
-    figure(1)
-    subplot(1,2,1)
-    scatter3( posHistory(1,:), posHistory(2,:), posHistory(3,:) );
-    title('Position History');
-    xlabel('X');
-    ylabel('Y');
-    zlabel('Z');
+    % figure(1)
+    % subplot(1,2,1)
+    % scatter3( posHistory(1,:), posHistory(2,:), posHistory(3,:) );
+    scatter3( pos(1,:), pos(2,:), pos(3,:) );
 
-    subplot(1,2,2)
-    scatter3( orientHistory(1,:), orientHistory(2,:), orientHistory(3,:) );
-    title('Orientation Quaternion History');
-    xlabel('X');
-    ylabel('Y');
-    zlabel('Z');
+    % subplot(1,2,2)
+    % scatter3( orientHistory(1,:), orientHistory(2,:), orientHistory(3,:) );
+    % title('Orientation Quaternion History');
+    % xlabel('X');
+    % ylabel('Y');
+    % zlabel('Z');
 
 end

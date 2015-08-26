@@ -9,6 +9,7 @@ function moveRobot(mTimer, event, handles)
         isSetup = true;
     end % if isempty(isSetup)
 
+    posRotated
     distFromGoalState = norm([posRotated(1) - handles.goalState(1), posRotated(2) - handles.goalState(2)]);
     closeToGoalState = distFromGoalState < 2.5; % metres
     if closeToGoalState
@@ -16,7 +17,7 @@ function moveRobot(mTimer, event, handles)
         translationalJoyCmd = 0.0;
     else
         angularJoyCmd = 0.00;
-        translationalJoyCmd = 0.05;
+        translationalJoyCmd = 0.12;
     end
 
     joyCmdsMsg = rosmessage(handles.joyCmdsPub);

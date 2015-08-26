@@ -1,4 +1,6 @@
-joyCmds2Topic = '/chair_joy';
-sourceSub = rossubscriber(joyCmds2Topic, rostype.sensor_msgs_Joy);
-sourceSub.NewMessageFcn = @(~,message) rospublisher('/chair_joy2',message);
-
+chairJoyTopic = '/chair_joy';
+timerHandles.chairJoySub = rossubscriber(chairJoyTopic, rostype.sensor_msgs_Joy);
+joyCmdsTopic = '/chair_joy2';
+timerHandles.joyCmdsPub = rospublisher(joyCmdsTopic, rostype.sensor_msgs_Joy);
+timerCopyTopic = timer('TimerFcn',{@copyTopicTimer,timerHandles},'Period',0.01,'ExecutionMode','fixedSpacing');
+% timerCopyTopic.StopFcn = {@exampleHelperTurtleBotStopCallback};

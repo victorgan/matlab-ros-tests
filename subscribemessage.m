@@ -53,9 +53,9 @@ hold on
 posHistory = [];
 orientHistory = [];
 transJoyCmdHistory = [];
-plot3(goalState(1),goalState(2),0,'.','MarkerSize',50);
+% plot3(goalState(1),goalState(2),0,'.','MarkerSize',50);
 tic;
-while toc < 5
+while toc < 100
     odomMsg = receive(odomSub,timeOut);
 
     position = odomMsg.Pose.Pose.Position;
@@ -76,16 +76,16 @@ while toc < 5
     scatter3( posRotated(1,:), posRotated(2,:), posRotated(3,:) );
 
 
-    distFromGoalState = norm([posRotated(1) - goalState(1), posRotated(2) - goalState(2)])   
-    closeToGoalState = distFromGoalState < 0.5; % metres
-    if ~closeToGoalState
-        angularJoyCmd = 0.00;
-        translationalJoyCmd = 0.2;
-        transJoyCmdHistory = [transJoyCmdHistory translationalJoyCmd];
-        joyCmdsMsg = rosmessage(joyCmdsPub);
-        joyCmdsMsg.Axes = [angularJoyCmd translationalJoyCmd];
-        joyCmdsMsg.Header.Stamp = rostime('now'); 
-        send(joyCmdsPub, joyCmdsMsg);
-    end
+%     distFromGoalState = norm([posRotated(1) - goalState(1), posRotated(2) - goalState(2)])   
+%     closeToGoalState = distFromGoalState < 0.5; % metres
+%     if ~closeToGoalState
+%         angularJoyCmd = 0.00;
+%         translationalJoyCmd = 0.2;
+%         transJoyCmdHistory = [transJoyCmdHistory translationalJoyCmd];
+%         joyCmdsMsg = rosmessage(joyCmdsPub);
+%         joyCmdsMsg.Axes = [angularJoyCmd translationalJoyCmd];
+%         joyCmdsMsg.Header.Stamp = rostime('now'); 
+%         send(joyCmdsPub, joyCmdsMsg);
+%     end
 end
 hold off

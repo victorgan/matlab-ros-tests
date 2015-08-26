@@ -24,22 +24,18 @@ xyzOptic = readXYZ(pointCloudMsgOptic);
 voxelGridSize = 0.05; % in metres
 ransacParams.floorPlaneTolerance = 0.02; % tolerance in m
 ransacParams.maxInclinationAngle = 30; % in degrees
-% points are respect to gan_ground_frame
-[pointCloudRotated, newOrigin, R_OpticToGround, T_OpticToGround] = processPointCloud(xyzOptic, voxelGridSize, ransacParams);
+[~, ~, R_OpticToGround, T_OpticToGround, ~] = processPointCloudLocal(xyzOptic, voxelGridSize, ransacParams); % points are respect to gan_ground_frame
 
 xyzOdom = readXYZ(pointcloudMsgOdom);
 R_OdomToGround = R_OpticToGround*R_OdomToOptic;
 T_OdomToGround = T_OpticToGround+T_OdomToOptic;
 pointCloudRotated2 = R_OdomToGround*xyzOdom' + repmat(T_OdomToGround,1,size(xyzOdom',2));
-% pointCloudRotated2 == pointCloudRotated
-
 
 % subscribe to odom, get inital odometry.
 % points are respect to odom
 odomTopic = '/kinect_odometer/odometry';
 odomSub = rossubscriber(odomTopic);
 odomMsg = receive(odomSub,timeOut);
-
 
 goalState = [0 3]; % [x y]
 joyCmdsTopic = '/chair_joy2';
@@ -57,8 +53,9 @@ hold on
 posHistory = [];
 orientHistory = [];
 transJoyCmdHistory = [];
+plot3(goalState(1),goalState(2),0,'.','MarkerSize',50);
 tic;
-while toc < 40
+while toc < 5
     odomMsg = receive(odomSub,timeOut);
 
     position = odomMsg.Pose.Pose.Position;
@@ -69,7 +66,9 @@ while toc < 40
     % orientation = odomMsg.Pose.Pose.Orientation;
     % orientQuat = [orientation.W orientation.X orientation.Y orientation.Z];
     % orientRotm = quat2rotm(orientQuat);
-    % orientHistory = [orientHistory orientQuat'];
+    % orientEul = quat2eul(orientQuat);
+    % theta = orientEul(1);
+    % orientHistory = [orientHistory theta];
 
     % figure(1)
     % subplot(1,2,1)
@@ -77,7 +76,7 @@ while toc < 40
     scatter3( posRotated(1,:), posRotated(2,:), posRotated(3,:) );
 
 
-    distFromGoalState = norm([pos(1) - goalState(1), pos(2) - goalState(2)])   
+    distFromGoalState = norm([posRotated(1) - goalState(1), posRotated(2) - goalState(2)])   
     closeToGoalState = distFromGoalState < 0.5; % metres
     if ~closeToGoalState
         angularJoyCmd = 0.00;

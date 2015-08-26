@@ -5,8 +5,11 @@ timerHandles.joyCmdsPub = rospublisher(joyCmdsTopic, rostype.sensor_msgs_Joy);
 timerHandles.R_OdomToGround = R_OdomToGround;
 timerHandles.T_OdomToGround = T_OdomToGround;
 timerHandles.goalState = [0 3]; % [x y]
-timer1 = timer('TimerFcn',{@moveRobot,timerHandles},'Period',0.01,'ExecutionMode','fixedSpacing');
-% timer1.StopFcn = {@exampleHelperTurtleBotStopCallback};
-% start(timer1);
+timerMoveRobot = timer('TimerFcn',{@moveRobot,timerHandles},'Period',0.01,'ExecutionMode','fixedSpacing');
+% start(timerMoveRobot);
+
+% stop(timerMoveRobot)
+% timerMoveRobot.Running
+% delete(timerMoveRobot)
 
 % hold off

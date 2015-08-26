@@ -11,5 +11,7 @@ timerMoveRobot = timer('TimerFcn',{@moveRobot,timerHandles},'Period',0.01,'Execu
 % stop(timerMoveRobot)
 % timerMoveRobot.Running
 % delete(timerMoveRobot)
+% clear timerMoveRobot
+% clear timerHandles
 
 % hold off

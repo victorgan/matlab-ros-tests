@@ -20,7 +20,7 @@ function moveRobot(mTimer, event, handles)
         disp('found goal')
         angularJoyCmd = 0.00;
         translationalJoyCmd = 0.0;
-    else if seconds(currentTime - initialTime) > 5 % 10 seconds
+    elseif seconds(currentTime - initialTime) > 5 % 10 seconds
         % too long. terminate.
         disp('too long')
         angularJoyCmd = 0.00;

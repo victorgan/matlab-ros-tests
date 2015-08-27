@@ -15,20 +15,24 @@ function moveRobot(mTimer, event, handles)
     end % if isempty(isSetup)
 
     distFromGoalState = norm([posRotated(1) - handles.goalState(1), posRotated(2) - handles.goalState(2)]);
-    closeToGoalState = distFromGoalState < 2.5; % metres
+    closeToGoalState = distFromGoalState < 0.7; % metres
     if closeToGoalState
         disp('found goal')
         angularJoyCmd = 0.00;
         translationalJoyCmd = 0.0;
-    elseif seconds(currentTime - initialTime) > 5 % 10 seconds
+        stop(mTimer);
+    elseif seconds(currentTime - initialTime) > 200 % seconds
         % too long. terminate.
         disp('too long')
         angularJoyCmd = 0.00;
         translationalJoyCmd = 0.0;
+        stop(mTimer);
+        distFromGoalState
     else % far from goal state
         disp('moving forward')
         angularJoyCmd = 0.00;
-        translationalJoyCmd = 0.05;
+        translationalJoyCmd = -0.7;
+        distFromGoalState
     end
 
 

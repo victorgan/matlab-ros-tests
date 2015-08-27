@@ -25,8 +25,8 @@ function [R_OdomToGround, T_OdomToGround] = odomToGround()
     ransacParams.maxInclinationAngle = 30; % in degrees
     [~, ~, R_OpticToGround, T_OpticToGround, ~] = processPointCloudLocal(xyzOptic, voxelGridSize, ransacParams); % points are respect to gan_ground_frame
 
-    xyzOdom = readXYZ(pointcloudMsgOdom);
     R_OdomToGround = R_OpticToGround*R_OdomToOptic;
     T_OdomToGround = T_OpticToGround+T_OdomToOptic;
+    % xyzOdom = readXYZ(pointcloudMsgOdom);
     % pointCloudRotated2 = R_OdomToGround*xyzOdom' + repmat(T_OdomToGround,1,size(xyzOdom',2));
 end

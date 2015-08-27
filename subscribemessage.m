@@ -55,7 +55,7 @@ orientHistory = [];
 transJoyCmdHistory = [];
 % plot3(goalState(1),goalState(2),0,'.','MarkerSize',50);
 tic;
-while toc < 100
+while toc < 20
     odomMsg = receive(odomSub,timeOut);
 
     position = odomMsg.Pose.Pose.Position;
@@ -63,18 +63,24 @@ while toc < 100
     posRotated = R_OdomToGround*pos + T_OdomToGround;
     posHistory = [posHistory posRotated];
 
-    % orientation = odomMsg.Pose.Pose.Orientation;
-    % orientQuat = [orientation.W orientation.X orientation.Y orientation.Z];
-    % orientRotm = quat2rotm(orientQuat);
-    % orientEul = quat2eul(orientQuat);
-    % theta = orientEul(1);
-    % orientHistory = [orientHistory theta];
+    orientation = odomMsg.Pose.Pose.Orientation;
+    orientQuat = [orientation.W orientation.X orientation.Y orientation.Z];
+    orientRotm = quat2rotm(orientQuat);
+    orientRotmGround = R_OdomToGround*orientRotm;
+    orientEul = rotm2eul(orientRotmGround);
+    theta = orientEul(1);
+    orientHistory = [orientHistory theta];
 
-    % figure(1)
     % subplot(1,2,1)
     % scatter3( posHistory(1,:), posHistory(2,:), posHistory(3,:) );
-    scatter3( posRotated(1,:), posRotated(2,:), posRotated(3,:) );
+    figure(1)
+    % scatter3( posRotated(1,:), posRotated(2,:), posRotated(3,:) );
 
+    starts = [posRotated(1) posRotated(2) posRotated(3)]';
+    initialvector = [0.2 0 0]';
+    ends = orientRotmGround*([posRotated(1) posRotated(2) posRotated(3)]' + initialvector);
+    quiver3(starts(1), starts(2), starts(3), ends(1), ends(2), ends(3));
+    rad2deg(theta)
 
 %     distFromGoalState = norm([posRotated(1) - goalState(1), posRotated(2) - goalState(2)])   
 %     closeToGoalState = distFromGoalState < 0.5; % metres
